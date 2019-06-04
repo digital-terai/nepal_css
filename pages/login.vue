@@ -7,18 +7,32 @@
             <v-card class="elevation-1 pa-3">
               <v-card-text>
                 <div class="layout column align-center">
-                  <img src="http://moewri.gov.np/source/images/logo-moewri-en.png" alt="Vue Material Admin">
+                  <img
+                    src="http://moewri.gov.np/source/images/logo-moewri-en.png"
+                    alt="Vue Material Admin"
+                  >
                   <h1 class="flex my-4 primary--text">Central Software System</h1>
                 </div>
                 <v-form>
-                  <v-text-field append-icon="person" name="login" label="Login" type="text"
-                                v-model="model.username"></v-text-field>
-                  <v-text-field append-icon="lock" name="password" label="Password" id="password" type="password"
-                                v-model="model.password"></v-text-field>
+                  <v-text-field
+                    append-icon="person"
+                    name="login"
+                    label="Login"
+                    type="text"
+                    v-model.trim="form.email"
+                  ></v-text-field>
+                  <v-text-field
+                    append-icon="lock"
+                    name="password"
+                    label="Password"
+                    id="password"
+                    type="password"
+                    v-model.trim="form.password"
+                  ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
-               <!--  <v-btn icon>
+                <!--  <v-btn icon>
                   <v-icon color="blue">fa fa-facebook-square fa-lg</v-icon>
                 </v-btn>
                 <v-btn icon>
@@ -26,7 +40,7 @@
                 </v-btn>
                 <v-btn icon>
                   <v-icon color="light-blue">fa fa-twitter fa-lg</v-icon>
-                </v-btn> -->
+                </v-btn>-->
                 <v-spacer></v-spacer>
                 <v-btn block color="primary" @click="login" :loading="loading">Login</v-btn>
               </v-card-actions>
@@ -39,35 +53,38 @@
 </template>
 
 <script>
-  export default {
-    layout: 'default',
-    data: () => ({
-      loading: false,
-      model: {
-        username: 'admin@example.com',
-        password: 'password'
-      }
-    }),
+export default {
+  middleware: ["guest"],
+  layout: "default",
+  data: () => ({
+    loading: false,
+    form: {}
+  }),
 
-    methods: {
-      login() {
-        this.loading = true;
-        setTimeout(() => {
-          this.$router.push('/admin');
-        }, 1000);
-      }
+  methods: {
+    async login() {
+      console.log(this.model);
+      this.loading = true;
+      // setTimeout(() => {
+      //   this.$router.push('/admin');
+      // }, 1000);
+
+      await this.$auth.loginWith("local", {
+        data: this.form
+      });
+      this.$router.push("/dashboard");
     }
-
-  };
+  }
+};
 </script>
 <style scoped lang="css">
-  #login {
-    height: 50%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: "";
-    z-index: 0;
-  }
+#login {
+  height: 50%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  z-index: 0;
+}
 </style>

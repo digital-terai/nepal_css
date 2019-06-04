@@ -4,7 +4,7 @@
       <v-layout row wrap>
         <v-flex lg12 sm12 xs12>
           <v-widget title="Hydropower projects" content-bg="white">
-              <v-btn icon slot="widget-header-action" to="/admin/setting/projects/create">
+            <v-btn icon slot="widget-header-action" to="/admin/projects/hydro/create">
               <v-icon class="text--secondary">add</v-icon>
             </v-btn>
             <v-btn icon slot="widget-header-action">
@@ -58,29 +58,43 @@
                             </td>
                           </tr>
                         </template>
-                      </v-data-table> -->
+                      </v-data-table>-->
                       <v-data-table
                         :headers="headers"
-                        :items="projects"
+                        :items="items"
                         :search="search"
                         :rows-per-page-items="[10,25,50,{text:'All','value':-1}]"
                         class="elevation-1"
                         item-key="uuid"
                       >
                         <template slot="items" slot-scope="props">
-                            <tr @click="rowClick(props.item)">
-                                <td>{{ props.item.name }}</td>
-                                <td class="text-xs-left">{{ props.item.deadline }}</td>
-                                <td class="text-xs-left"><v-progress-linear :value="props.item.progress" height="5" :color="props.item.color"></v-progress-linear> </td>
-                                <td class="text-xs-right">
-                                    <v-btn flat icon color="grey">
-                                      <v-icon>edit</v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon color="grey">
-                                      <v-icon>delete</v-icon>
-                                    </v-btn>
-                                </td>
-                            </tr>
+                          <tr>
+                            <td>{{ props.item.name }}</td>
+                            <td>{{ props.item.project_cost}}</td>
+                            <td>{{ props.item.installed_capacity }}</td>
+                            <td>{{ props.item.design_discharge}}</td>
+                            <td>{{ props.item.cod}}</td>
+                            <td>
+                              <nuxt-link
+                                :to="{name:'admin-projects-hydro-create',params:{id:props.item.id}}"
+                              >
+                                <v-btn depressed outline icon fab dark color="primary" small>
+                                  <v-icon>edit</v-icon>
+                                </v-btn>
+                              </nuxt-link>
+                              <nuxt-link
+                                :to="{name:'admin-projects-hydro-details',params:{details:props.item.id}}"
+                              >
+                                <v-btn depressed outline icon fab dark color="primary" small nuxt>
+                                  <v-icon>arrow_right_alt</v-icon>
+                                </v-btn>
+                              </nuxt-link>
+
+                              <v-btn depressed outline icon fab dark color="pink" small>
+                                <v-icon @click="deletehydropower(props.item.id)">delete</v-icon>
+                              </v-btn>
+                            </td>
+                          </tr>
                         </template>
                       </v-data-table>
                     </v-card-text>
@@ -96,40 +110,59 @@
 </template>
 
 <script>
-    import VWidget from '@/components/VWidget';
-    import {Items as Users} from '@/api/user';
-    import { Projects } from '@/api/project';
-  export default {
-    layout: 'dashboard',
-    components: {
-      VWidget,
-    },
-    data: () => ({
-      search: '',
-      headers: [
-            {
-              text: 'Projects',
-              align: 'left',
-              value: 'name'
-            },
-            { text: 'Deadline', value: 'deadline' },
-            { text: 'Progress', value: 'progress' },
-            { text: 'Action', value: 'action', align: 'right' },
-        ]
-    }),
-    methods:{
-      rowClick(data){
-        // console.log('/admin/projects/'+data.uuid);
-        this.$router.push({
-            path: '/admin/projects/hydro/'+data.uuid
-        })
-      }
-    },
-    computed: {
-        projects () {
-            return Projects;
-        }
-    },
+import VWidget from "@/components/VWidget";
+import { mapGetters } from "vuex";
+export default {
+  layout: "dashboard",
+  components: {
+    VWidget
+  },
+  data: () => ({
+    search: "",
+    headers: [
+      {
+        text: "Project Name",
+        value: "name"
+      },
+      {
+        text: "ProjectCost",
+        value: "projectcost"
+      },
+      {
+        text: "Installed Capacity",
+        value: "installed_capacity"
+      },
+      {
+        text: "DesignDischarge",
+        value: "design_discharge"
+      },
+      {
+        text: "COD",
+        value: "cod"
+      },
 
-  };
+      {
+        text: "Action",
+        value: ""
+      }
+    ]
+  }),
+  methods: {
+    rowClick(data) {
+      // console.log('/admin/projects/'+data.uuid);
+      this.$router.push({
+        path: "/admin/projects/hydro/" + data.uuid
+      });
+    },
+    deletehydropower(id) {
+      this.$store.dispatch("hydropower/Deletehydropower", id);
+    }
+  },
+  mounted() {
+    this.$store.dispatch("hydropower/Loadhydropower");
+  },
+  computed: {
+    ...mapGetters({ items: "hydropower/getallhydropower" })
+  }
+};
 </script>

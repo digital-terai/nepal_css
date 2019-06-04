@@ -4,7 +4,7 @@
       <v-layout row wrap>
         <v-flex lg12 sm12 xs12>
           <v-widget title="Hydropower projects" content-bg="white">
-              <v-btn icon slot="widget-header-action" to="/admin/setting/projects/create">
+            <v-btn icon slot="widget-header-action" to="/admin/setting/projects/create">
               <v-icon class="text--secondary">add</v-icon>
             </v-btn>
             <v-btn icon slot="widget-header-action">
@@ -49,7 +49,17 @@
                               <v-btn depressed outline icon fab dark color="primary" small>
                                 <v-icon>edit</v-icon>
                               </v-btn>
-                              <v-btn depressed outline icon fab dark color="primary" small :to="'/admin/projects/'+props.item.uuid" nuxt>
+                              <v-btn
+                                depressed
+                                outline
+                                icon
+                                fab
+                                dark
+                                color="primary"
+                                small
+                                :to="'/admin/projects/'+props.item.uuid"
+                                nuxt
+                              >
                                 <v-icon>arrow_right_alt</v-icon>
                               </v-btn>
                               <v-btn depressed outline icon fab dark color="pink" small>
@@ -72,43 +82,41 @@
 </template>
 
 <script>
-  import VWidget from '@/components/VWidget';
-   import {Items as Users} from '@/api/user';
-  export default {
-    layout: 'dashboard',
-    components: {
-      VWidget,
-    },
-    data: () => ({
-      search: '',
-      complex: {
-          headers: [
-            {
-              text: 'Projects',
-              value: 'name'
-            },
-            {
-              text: 'Description',
-              value: 'email'
-            },
-            {
-              text: 'Action',
-              value: ''
-            },
-          ],
-          items: Users
+import VWidget from "@/components/VWidget";
+import { Items as Users } from "@/api/user";
+export default {
+  layout: "dashboard",
+  components: {
+    VWidget
+  },
+  data: () => ({
+    search: "",
+    complex: {
+      headers: [
+        {
+          text: "Projects",
+          value: "name"
+        },
+        {
+          text: "Description",
+          value: "email"
+        },
+        {
+          text: "Action",
+          value: ""
         }
-    }),
-    methods:{
-      rowClick(data){
-        // console.log('/admin/projects/'+data.uuid);
-        this.$router.push({
-            path: '/admin/projects/'+data.uuid
-        })
-      }
-    },
-    computed: {
-    },
-
-  };
+      ],
+      items: Users
+    }
+  }),
+  methods: {
+    rowClick(data) {
+      // console.log('/admin/projects/'+data.uuid);
+      this.$router.push({
+        path: "/admin/projects/" + data.uuid
+      });
+    }
+  },
+  computed: {}
+};
 </script>
